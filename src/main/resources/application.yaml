@@ -1,0 +1,5 @@
+spring:
+  datasource:
+    username: ${USER}
+    password: ${PASSWORD}
+    url: jdbc:mysql://localhost/${DB}
