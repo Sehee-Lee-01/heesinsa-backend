@@ -1,4 +1,4 @@
-package com.sehee.heesinsa;
+package com.sehee.heesinsa.configuration;
 
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
