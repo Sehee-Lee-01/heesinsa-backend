@@ -4,9 +4,9 @@ import com.sehee.heesinsa.product.dto.RequestCreateOrUpdateProductDTO;
 import com.sehee.heesinsa.product.dto.ResponseProductDTO;
 import com.sehee.heesinsa.product.model.Category;
 import com.sehee.heesinsa.product.model.Product;
-import com.sehee.heesinsa.product.repository.ProductRepository;
 import jakarta.validation.constraints.NotBlank;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
 
 import java.text.MessageFormat;
@@ -23,12 +23,14 @@ public class ProductService {
         this.productRepository = productRepository;
     }
 
+    @Transactional
     public ResponseProductDTO create(RequestCreateOrUpdateProductDTO createProductDTO) {
         Product product = Product.from(createProductDTO);
         productRepository.insert(product);
         return ResponseProductDTO.of(product);
     }
 
+    @Transactional(readOnly = true)
     public List<ResponseProductDTO> readAll() {
         return productRepository.findAll()
                 .stream()
@@ -36,6 +38,7 @@ public class ProductService {
                 .toList();
     }
 
+    @Transactional(readOnly = true)
     public List<ResponseProductDTO> readAllByName(@NotBlank String name) {
         return productRepository.findAllByName(name)
                 .stream()
@@ -43,6 +46,7 @@ public class ProductService {
                 .toList();
     }
 
+    @Transactional(readOnly = true)
     public Product readById(UUID id) {
         Product product = productRepository.findById(id)
                 .orElseThrow(() -> new NoSuchElementException(
@@ -51,12 +55,14 @@ public class ProductService {
         return product;
     }
 
+    @Transactional
     public ResponseProductDTO delete(UUID id) {
         ResponseProductDTO responseProductDTO = ResponseProductDTO.of(readById(id));
         productRepository.delete(id);
         return responseProductDTO;
     }
 
+    @Transactional
     public ResponseProductDTO update(UUID id, RequestCreateOrUpdateProductDTO updateProductDTO) {
         Product product = readById(id);
         product.setCategory(Category.valueOf(updateProductDTO.category()));
