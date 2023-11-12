@@ -3,7 +3,6 @@ package com.sehee.heesinsa.product;
 import com.sehee.heesinsa.product.dto.RequestCreateProductDTO;
 import com.sehee.heesinsa.product.dto.ResponseProductDTO;
 import jakarta.validation.Valid;
-import jakarta.validation.constraints.NotBlank;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -23,8 +22,8 @@ public class ProductController {
         return productService.createProduct(requestCreateProductDTO);
     }
 
-    @GetMapping("/{name}")
-    public List<ResponseProductDTO> readAllByProductName(@NotBlank @PathVariable String name) {
-        return productService.readAllByProductName(name);
+    @GetMapping
+    public List<ResponseProductDTO> readAllByProductName(@RequestParam(required = false) String name) {
+        return name == null ? productService.readAll() : productService.readAllByProductName(name);
     }
 }
