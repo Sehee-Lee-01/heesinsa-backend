@@ -1,6 +1,6 @@
 package com.sehee.heesinsa.order.model;
 
-import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.*;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -9,17 +9,24 @@ import java.util.UUID;
 
 public class Order {
     private final UUID id;
-    private final Email email;
+    @Email
+    @NotBlank
+    private final String email;
     @NotEmpty
     private final List<OrderItem> orderItems;
+    @NotNull
+    @Past
     private final LocalDateTime createdAt;
+    @NotBlank
     private String address;
+    @NotBlank
     private String postcode;
+    @NotNull
     private OrderStatus orderStatus;
     private LocalDateTime updatedAt;
 
 
-    public Order(UUID id, Email email, List<OrderItem> orderItems, LocalDateTime createdAt, String address, String postcode, OrderStatus orderStatus, LocalDateTime updatedAt) {
+    public Order(UUID id, String email, List<OrderItem> orderItems, LocalDateTime createdAt, String address, String postcode, OrderStatus orderStatus, LocalDateTime updatedAt) {
         this.id = id;
         this.email = email;
         this.orderItems = orderItems;
@@ -30,11 +37,15 @@ public class Order {
         this.updatedAt = updatedAt;
     }
 
+    public Order(String email, List<OrderItem> orderItems, String address, String postcode) {
+        this(UUID.randomUUID(), email, orderItems, LocalDateTime.now(), address, postcode, OrderStatus.ACCEPTED, LocalDateTime.now());
+    }
+
     public UUID getId() {
         return id;
     }
 
-    public Email getEmail() {
+    public String getEmail() {
         return email;
     }
 

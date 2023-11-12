@@ -8,15 +8,16 @@ import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Repository;
 
 import javax.sql.DataSource;
-import java.nio.ByteBuffer;
 import java.time.LocalDateTime;
 import java.util.*;
 
+import static com.sehee.heesinsa.util.JdbcUtil.EXPECTED_UPDATE_COUNT;
+import static com.sehee.heesinsa.util.JdbcUtil.toUUID;
+
 @Repository
 public class ProductRepository {
-    private static final int EXPECTED_UPDATE_COUNT = 1;
-    private final NamedParameterJdbcTemplate jdbcTemplate;
-    private final RowMapper<Product> rowMapper = (resultSet, i) -> {
+
+    private static final RowMapper<Product> rowMapper = (resultSet, i) -> {
         UUID id = toUUID(resultSet.getBytes("id"));
         Category category = Category.valueOf(resultSet.getString("category"));
         String name = resultSet.getString("name");
@@ -26,17 +27,13 @@ public class ProductRepository {
         LocalDateTime updatedAt = resultSet.getTimestamp("updated_at").toLocalDateTime();
         return new Product(id, createdAt, category, name, description, price, updatedAt);
     };
+    private final NamedParameterJdbcTemplate jdbcTemplate;
 
     ProductRepository(DataSource dataSource) {
         jdbcTemplate = new NamedParameterJdbcTemplate(dataSource);
     }
 
-    private UUID toUUID(byte[] bytes) {
-        var byteBuffer = ByteBuffer.wrap(bytes);
-        return new UUID(byteBuffer.getLong(), byteBuffer.getLong());
-    }
-
-    private Map<String, Object> toParamMap(Product product) {
+    private static Map<String, Object> toParamMap(Product product) {
         Map<String, Object> paramMap = new HashMap<>();
         paramMap.put("id", product.getId().toString().getBytes());
         paramMap.put("category", product.getCategory().name());
