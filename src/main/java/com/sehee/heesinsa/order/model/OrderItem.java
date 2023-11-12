@@ -1,4 +1,4 @@
-package com.sehee.heesinsa.model;
+package com.sehee.heesinsa.order.model;
 
 import java.util.UUID;
 

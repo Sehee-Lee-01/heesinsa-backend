@@ -1,11 +1,11 @@
-package com.sehee.heesinsa.model;
+package com.sehee.heesinsa.product.model;
 
 public enum Category {
     OUTER,
     TOP,
     PANTS,
     SKIRTS,
-    ONEPIECE,
+    ONE_PIECE,
     SHOES,
     ACC
 }

@@ -1,14 +1,25 @@
-package com.sehee.heesinsa.model;
+package com.sehee.heesinsa.product.model;
+
+import com.sehee.heesinsa.product.dto.RequestCreateProductDTO;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import org.hibernate.validator.constraints.Length;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
 
 public class Product {
     private final UUID id;
+    @NotBlank
     private final LocalDateTime createdAt;
+    @NotNull
     private Category category;
+    @NotBlank
+    @Length(min = 20)
     private String name;
     private String description;
+    @Min(value = 0, message = "Price should not be less than 0!")
     private long price;
     private LocalDateTime updatedAt;
 
@@ -24,6 +35,11 @@ public class Product {
 
     public Product(Category category, String name, String description, long price) {
         this(UUID.randomUUID(), LocalDateTime.now(), category, name, description, price, LocalDateTime.now());
+    }
+
+    public static Product from(RequestCreateProductDTO requestCreateProductDTO) {
+        Category category = Category.valueOf(requestCreateProductDTO.category());
+        return new Product(category, requestCreateProductDTO.name(), requestCreateProductDTO.description(), requestCreateProductDTO.price());
     }
 
     public UUID getId() {
