@@ -7,6 +7,7 @@ import jakarta.validation.constraints.NotNull;
 import org.hibernate.validator.constraints.Length;
 
 import java.time.LocalDateTime;
+import java.util.Objects;
 import java.util.UUID;
 
 public class Product {
@@ -55,7 +56,7 @@ public class Product {
     }
 
     public void setCategory(Category category) {
-        if (this.category != category) {
+        if (!Objects.equals(this.category, category)) {
             this.category = category;
             this.updatedAt = LocalDateTime.now();
         }
@@ -66,7 +67,7 @@ public class Product {
     }
 
     public void setName(String name) {
-        if (!this.name.equals(name)) {
+        if (!Objects.equals(this.name, name)) {
             this.name = name;
             this.updatedAt = LocalDateTime.now();
         }
@@ -77,7 +78,7 @@ public class Product {
     }
 
     public void setDescription(String description) {
-        if (!this.description.equals(description)) {
+        if (!Objects.equals(this.description, description)) {
             this.description = description;
             this.updatedAt = LocalDateTime.now();
         }
@@ -88,7 +89,7 @@ public class Product {
     }
 
     public void setPrice(long price) {
-        if (this.price != price) {
+        if (!Objects.equals(this.price, price)) {
             this.price = price;
             this.updatedAt = LocalDateTime.now();
         }
