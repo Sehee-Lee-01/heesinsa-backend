@@ -1,11 +1,13 @@
 package com.sehee.heesinsa.product;
 
 import com.sehee.heesinsa.product.dto.RequestCreateProductDTO;
+import com.sehee.heesinsa.product.dto.ResponseProductDTO;
 import com.sehee.heesinsa.product.model.Product;
 import com.sehee.heesinsa.product.repository.ProductRepository;
-import jakarta.validation.Valid;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
+
+import java.util.List;
 
 @Validated
 @Service
@@ -16,9 +18,16 @@ public class ProductService {
         this.productRepository = productRepository;
     }
 
-    public Product createProduct(RequestCreateProductDTO requestCreateProductDTO) {
+    public ResponseProductDTO createProduct(RequestCreateProductDTO requestCreateProductDTO) {
         Product product = Product.from(requestCreateProductDTO);
         productRepository.insert(product);
-        return product;
+        return ResponseProductDTO.of(product);
+    }
+
+    public List<ResponseProductDTO> readAllByProductName(String name) {
+        return productRepository.findAllByName(name)
+                .stream()
+                .map(ResponseProductDTO::of)
+                .toList();
     }
 }
