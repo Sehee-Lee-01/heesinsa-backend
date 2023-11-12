@@ -1,11 +1,12 @@
 package com.sehee.heesinsa.order.model;
 
+import jakarta.validation.constraints.NotBlank;
 import org.springframework.util.Assert;
 
 import java.util.Objects;
 import java.util.regex.Pattern;
 
-public record Email(String address) {
+public record Email(@NotBlank String address) {
     public Email {
         checkAddress(address);
     }
@@ -17,7 +18,6 @@ public record Email(String address) {
     }
 
     @Override
-
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
