@@ -12,11 +12,11 @@ public class Order {
     @Email
     @NotBlank
     private final String email;
-    @NotEmpty
-    private final List<OrderItem> orderItems;
     @NotNull
     @Past
     private final LocalDateTime createdAt;
+    @NotEmpty
+    private List<OrderItem> orderItems;
     @NotBlank
     private String address;
     @NotBlank
@@ -24,12 +24,21 @@ public class Order {
     @NotNull
     private OrderStatus orderStatus;
     private LocalDateTime updatedAt;
-
-
     public Order(UUID id, String email, List<OrderItem> orderItems, LocalDateTime createdAt, String address, String postcode, OrderStatus orderStatus, LocalDateTime updatedAt) {
         this.id = id;
         this.email = email;
         this.orderItems = orderItems;
+        this.createdAt = createdAt;
+        this.address = address;
+        this.postcode = postcode;
+        this.orderStatus = orderStatus;
+        this.updatedAt = updatedAt;
+    }
+
+
+    public Order(UUID id, String email, LocalDateTime createdAt, String address, String postcode, OrderStatus orderStatus, LocalDateTime updatedAt) {
+        this.id = id;
+        this.email = email;
         this.createdAt = createdAt;
         this.address = address;
         this.postcode = postcode;
@@ -51,6 +60,10 @@ public class Order {
 
     public List<OrderItem> getOrderItems() {
         return orderItems;
+    }
+
+    public void setOrderItems(List<OrderItem> orderItems) {
+        this.orderItems = orderItems;
     }
 
     public LocalDateTime getCreatedAt() {

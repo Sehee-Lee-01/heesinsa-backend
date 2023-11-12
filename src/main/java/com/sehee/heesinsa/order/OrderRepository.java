@@ -2,19 +2,37 @@ package com.sehee.heesinsa.order;
 
 import com.sehee.heesinsa.order.model.Order;
 import com.sehee.heesinsa.order.model.OrderItem;
+import com.sehee.heesinsa.order.model.OrderStatus;
 import org.springframework.jdbc.IncorrectResultSetColumnCountException;
+import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Repository;
 
 import javax.sql.DataSource;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
+import java.time.LocalDateTime;
+import java.util.*;
 
 import static com.sehee.heesinsa.util.JdbcUtil.EXPECTED_UPDATE_COUNT;
+import static com.sehee.heesinsa.util.JdbcUtil.toUUID;
 
 @Repository
 public class OrderRepository {
+    private static final RowMapper<Order> orderRowMapperper = (resultSet, i) -> {
+        UUID id = toUUID(resultSet.getBytes("id"));
+        String email = resultSet.getString("email");
+        String address = resultSet.getString("address");
+        String postcode = resultSet.getString("postcode");
+        OrderStatus orderStatus = OrderStatus.valueOf(resultSet.getString("order_status"));
+        LocalDateTime createdAt = resultSet.getTimestamp("created_at").toLocalDateTime();
+        LocalDateTime updatedAt = resultSet.getTimestamp("updated_at").toLocalDateTime();
+        return new Order(id, email, createdAt, address, postcode, orderStatus, updatedAt);
+    };
+    private static final RowMapper<OrderItem> orderItemRowMapper = (resultSet, i) -> {
+        UUID orderId = toUUID(resultSet.getBytes("order_id"));
+        UUID productId = toUUID(resultSet.getBytes("product_id"));
+        int quantity = Integer.parseInt(resultSet.getString("quantity"));
+        return new OrderItem(orderId, productId, quantity);
+    };
     private final NamedParameterJdbcTemplate jdbcTemplate;
 
     OrderRepository(DataSource dataSource) {
@@ -54,5 +72,21 @@ public class OrderRepository {
         paramMap.put("product_id", item.productId().toString().getBytes());
         paramMap.put("quantity", item.quantity());
         return paramMap;
+    }
+
+    public List<Order> findAll() {
+        return jdbcTemplate.query("SELECT * FROM orders", Collections.emptyMap(), orderRowMapperper);
+    }
+
+    public Optional<Order> findById(UUID orderId) {
+        return Optional.ofNullable(
+                jdbcTemplate.queryForObject("SELECT * FROM orders WHERE id = UUID_TO_BIN(:id)",
+                        Collections.singletonMap("id", orderId.toString().getBytes()), orderRowMapperper)
+        );
+    }
+
+    public List<OrderItem> findAllOrderItemsById(UUID orderId) {
+        return jdbcTemplate.query("SELECT * FROM order_items WHERE order_id = UUID_TO_BIN(:order_id)",
+                Collections.singletonMap("order_id", orderId.toString().getBytes()), orderItemRowMapper);
     }
 }

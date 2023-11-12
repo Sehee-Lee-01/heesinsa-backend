@@ -2,10 +2,12 @@ package com.sehee.heesinsa.order;
 
 import com.sehee.heesinsa.order.dto.RequestCreateOrUpdateOrderDTO;
 import com.sehee.heesinsa.order.dto.ResponseOrderDTO;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import java.net.URI;
+import java.util.List;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/orders")
@@ -17,7 +19,19 @@ public class OrderController {
     }
 
     @PostMapping
-    public ResponseOrderDTO create(@RequestBody RequestCreateOrUpdateOrderDTO createOrderDTO) {
-        return orderService.create(createOrderDTO);
+    public ResponseEntity<ResponseOrderDTO> create(@RequestBody RequestCreateOrUpdateOrderDTO createOrderDTO) {
+        ResponseOrderDTO responseOrderDTO = orderService.create(createOrderDTO);
+        return ResponseEntity.created(URI.create("/api/orders" + responseOrderDTO.id()))
+                .body(responseOrderDTO);
+    }
+
+    @GetMapping("/{orderId}")
+    public ResponseEntity<ResponseOrderDTO> readById(@PathVariable UUID orderId) {
+        return ResponseEntity.ok(orderService.readById(orderId));
+    }
+
+    @GetMapping
+    public ResponseEntity<List<ResponseOrderDTO>> readAll() {
+        return ResponseEntity.ok(orderService.readAll());
     }
 }
