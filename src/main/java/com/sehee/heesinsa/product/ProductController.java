@@ -3,12 +3,13 @@ package com.sehee.heesinsa.product;
 import com.sehee.heesinsa.product.dto.RequestCreateOrUpdateProductDTO;
 import com.sehee.heesinsa.product.dto.ResponseProductDTO;
 import jakarta.validation.Valid;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.net.URI;
 import java.util.List;
 import java.util.UUID;
 
-//TODO: apply ResponseEntity
 @RequestMapping("/api/products")
 @RestController
 public class ProductController {
@@ -19,27 +20,29 @@ public class ProductController {
     }
 
     @PostMapping
-    public ResponseProductDTO create(@Valid @RequestBody RequestCreateOrUpdateProductDTO createProductDTO) {
-        return productService.create(createProductDTO);
+    public ResponseEntity<ResponseProductDTO> create(@Valid @RequestBody RequestCreateOrUpdateProductDTO createProductDTO) {
+        ResponseProductDTO createdProduct = productService.create(createProductDTO);
+        return ResponseEntity.created(URI.create("/api/products/" + createdProduct.id()))
+                .body(createdProduct);
     }
 
     @PutMapping("/{id}")
-    public ResponseProductDTO update(@PathVariable UUID id, @Valid @RequestBody RequestCreateOrUpdateProductDTO updateProductDTO) {
-        return productService.update(id, updateProductDTO);
+    public ResponseEntity<ResponseProductDTO> update(@PathVariable UUID id, @Valid @RequestBody RequestCreateOrUpdateProductDTO updateProductDTO) {
+        return ResponseEntity.ok(productService.update(id, updateProductDTO));
     }
 
     @DeleteMapping("/{id}")
-    public ResponseProductDTO delete(@PathVariable UUID id) {
-        return productService.delete(id);
+    public ResponseEntity<ResponseProductDTO> delete(@PathVariable UUID id) {
+        return ResponseEntity.ok(productService.delete(id));
     }
 
     @GetMapping
-    public List<ResponseProductDTO> readAll(@RequestParam(required = false) String name) {
-        return name == null ? productService.readAll() : productService.readAllByName(name);
+    public ResponseEntity<List<ResponseProductDTO>> readAll(@RequestParam(required = false) String name) {
+        return ResponseEntity.ok(name == null ? productService.readAll() : productService.readAllByName(name));
     }
 
     @GetMapping("/{id}")
-    public ResponseProductDTO readById(@PathVariable UUID id) {
-        return ResponseProductDTO.of(productService.readById(id));
+    public ResponseEntity<ResponseProductDTO> readById(@PathVariable UUID id) {
+        return ResponseEntity.ok(ResponseProductDTO.of(productService.readById(id)));
     }
 }
