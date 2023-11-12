@@ -63,4 +63,8 @@ public class ProductRepository {
                 Map.of("name", "%" + name + "%"),
                 rowMapper);
     }
+
+    public List<Product> findAll() {
+        return jdbcTemplate.query("SELECT * FROM products", Collections.emptyMap(), rowMapper);
+    }
 }

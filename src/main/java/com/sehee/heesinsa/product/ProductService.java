@@ -4,6 +4,7 @@ import com.sehee.heesinsa.product.dto.RequestCreateProductDTO;
 import com.sehee.heesinsa.product.dto.ResponseProductDTO;
 import com.sehee.heesinsa.product.model.Product;
 import com.sehee.heesinsa.product.repository.ProductRepository;
+import jakarta.validation.constraints.NotBlank;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
 
@@ -24,7 +25,14 @@ public class ProductService {
         return ResponseProductDTO.of(product);
     }
 
-    public List<ResponseProductDTO> readAllByProductName(String name) {
+    public List<ResponseProductDTO> readAll() {
+        return productRepository.findAll()
+                .stream()
+                .map(ResponseProductDTO::of)
+                .toList();
+    }
+
+    public List<ResponseProductDTO> readAllByProductName(@NotBlank String name) {
         return productRepository.findAllByName(name)
                 .stream()
                 .map(ResponseProductDTO::of)
