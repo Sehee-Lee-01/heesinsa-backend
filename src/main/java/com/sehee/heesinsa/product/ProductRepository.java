@@ -1,4 +1,4 @@
-package com.sehee.heesinsa.product.repository;
+package com.sehee.heesinsa.product;
 
 import com.sehee.heesinsa.product.model.Category;
 import com.sehee.heesinsa.product.model.Product;
