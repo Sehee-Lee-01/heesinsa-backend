@@ -3,7 +3,7 @@ USE heesinsa;
 CREATE TABLE products
 (
     id          BINARY(16) PRIMARY KEY,
-    name        VARCHAR(20) NOT NULL,
+    name        VARCHAR(20) NOT NULL UNIQUE,
     category    VARCHAR(50) NOT NULL,
     price       bigint      NOT NULL,
     description VARCHAR(500) DEFAULT NULL,
@@ -32,3 +32,5 @@ CREATE TABLE order_items
     CONSTRAINT order_id FOREIGN KEY (order_id) REFERENCES orders (id) ON DELETE CASCADE,
     CONSTRAINT product_id FOREIGN KEY (product_id) REFERENCES products (id) ON DELETE CASCADE
 );
+
+DROP DATABASE heesinsa;
