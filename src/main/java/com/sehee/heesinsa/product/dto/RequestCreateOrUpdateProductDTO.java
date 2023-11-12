@@ -4,7 +4,7 @@ import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 
-public record RequestCreateProductDTO(
+public record RequestCreateOrUpdateProductDTO(
         @NotBlank
         String name,
         @NotBlank
