@@ -42,7 +42,7 @@ public class ProductService {
                 .toList();
     }
 
-    public ResponseProductDTO readByProductId(UUID productId) {
+    public ResponseProductDTO readById(UUID productId) {
         Product product = productRepository.findById(productId)
                 .orElseThrow(() -> new NoSuchElementException(
                         MessageFormat.format("There is no product with that id: {0}.", productId.toString())
@@ -51,7 +51,7 @@ public class ProductService {
     }
 
     public ResponseProductDTO delete(UUID productId) {
-        ResponseProductDTO responseProductDTO = readByProductId(productId);
+        ResponseProductDTO responseProductDTO = readById(productId);
         productRepository.delete(productId);
         return responseProductDTO;
     }
