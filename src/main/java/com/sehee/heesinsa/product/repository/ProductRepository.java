@@ -78,4 +78,13 @@ public class ProductRepository {
             throw new IncorrectResultSetColumnCountException(EXPECTED_UPDATE_COUNT, deletedCount);
         }
     }
+
+    public void update(Product product) {
+        int updatedCount = jdbcTemplate.update("UPDATE products SET name = :name, category = :category, description =:description, price=:price " +
+                        "WHERE id = UUID_TO_BIN(:id)",
+                toParamMap(product));
+        if (updatedCount != EXPECTED_UPDATE_COUNT) {
+            throw new IncorrectResultSetColumnCountException(EXPECTED_UPDATE_COUNT, updatedCount);
+        }
+    }
 }

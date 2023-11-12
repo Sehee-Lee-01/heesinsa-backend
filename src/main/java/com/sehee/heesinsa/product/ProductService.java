@@ -1,7 +1,8 @@
 package com.sehee.heesinsa.product;
 
-import com.sehee.heesinsa.product.dto.RequestCreateProductDTO;
+import com.sehee.heesinsa.product.dto.RequestCreateOrUpdateProductDTO;
 import com.sehee.heesinsa.product.dto.ResponseProductDTO;
+import com.sehee.heesinsa.product.model.Category;
 import com.sehee.heesinsa.product.model.Product;
 import com.sehee.heesinsa.product.repository.ProductRepository;
 import jakarta.validation.constraints.NotBlank;
@@ -22,8 +23,8 @@ public class ProductService {
         this.productRepository = productRepository;
     }
 
-    public ResponseProductDTO create(RequestCreateProductDTO requestCreateProductDTO) {
-        Product product = Product.from(requestCreateProductDTO);
+    public ResponseProductDTO create(RequestCreateOrUpdateProductDTO createProductDTO) {
+        Product product = Product.from(createProductDTO);
         productRepository.insert(product);
         return ResponseProductDTO.of(product);
     }
@@ -42,18 +43,28 @@ public class ProductService {
                 .toList();
     }
 
-    public ResponseProductDTO readById(UUID productId) {
-        Product product = productRepository.findById(productId)
+    public Product readById(UUID id) {
+        Product product = productRepository.findById(id)
                 .orElseThrow(() -> new NoSuchElementException(
-                        MessageFormat.format("There is no product with that id: {0}.", productId.toString())
+                        MessageFormat.format("There is no product with that id: {0}.", id.toString())
                 ));
-        return ResponseProductDTO.of(product);
+        return product;
     }
 
-    public ResponseProductDTO delete(UUID productId) {
-        ResponseProductDTO responseProductDTO = readById(productId);
-        productRepository.delete(productId);
+    public ResponseProductDTO delete(UUID id) {
+        ResponseProductDTO responseProductDTO = ResponseProductDTO.of(readById(id));
+        productRepository.delete(id);
         return responseProductDTO;
+    }
+
+    public ResponseProductDTO update(UUID id, RequestCreateOrUpdateProductDTO updateProductDTO) {
+        Product product = readById(id);
+        product.setCategory(Category.valueOf(updateProductDTO.category()));
+        product.setName(updateProductDTO.name());
+        product.setDescription(updateProductDTO.description());
+        product.setPrice(updateProductDTO.price());
+        productRepository.update(product);
+        return ResponseProductDTO.of(readById(id));
     }
 }
 

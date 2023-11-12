@@ -1,10 +1,8 @@
 package com.sehee.heesinsa.product;
 
-import com.sehee.heesinsa.product.dto.RequestCreateProductDTO;
+import com.sehee.heesinsa.product.dto.RequestCreateOrUpdateProductDTO;
 import com.sehee.heesinsa.product.dto.ResponseProductDTO;
 import jakarta.validation.Valid;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -21,12 +19,17 @@ public class ProductController {
     }
 
     @PostMapping
-    public ResponseProductDTO create(@Valid @RequestBody RequestCreateProductDTO requestCreateProductDTO) {
-        return productService.create(requestCreateProductDTO);
+    public ResponseProductDTO create(@Valid @RequestBody RequestCreateOrUpdateProductDTO createProductDTO) {
+        return productService.create(createProductDTO);
     }
 
-    @DeleteMapping
-    public ResponseProductDTO delete(@NotNull @RequestParam UUID id) {
+    @PutMapping("/{id}")
+    public ResponseProductDTO update(@PathVariable UUID id, @Valid @RequestBody RequestCreateOrUpdateProductDTO updateProductDTO) {
+        return productService.update(id, updateProductDTO);
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseProductDTO delete(@PathVariable UUID id) {
         return productService.delete(id);
     }
 
@@ -37,6 +40,6 @@ public class ProductController {
 
     @GetMapping("/{id}")
     public ResponseProductDTO readById(@PathVariable UUID id) {
-        return productService.readById(id);
+        return ResponseProductDTO.of(productService.readById(id));
     }
 }

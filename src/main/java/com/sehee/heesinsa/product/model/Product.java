@@ -1,6 +1,6 @@
 package com.sehee.heesinsa.product.model;
 
-import com.sehee.heesinsa.product.dto.RequestCreateProductDTO;
+import com.sehee.heesinsa.product.dto.RequestCreateOrUpdateProductDTO;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -37,7 +37,7 @@ public class Product {
         this(UUID.randomUUID(), LocalDateTime.now(), category, name, description, price, LocalDateTime.now());
     }
 
-    public static Product from(RequestCreateProductDTO requestCreateProductDTO) {
+    public static Product from(RequestCreateOrUpdateProductDTO requestCreateProductDTO) {
         Category category = Category.valueOf(requestCreateProductDTO.category());
         return new Product(category, requestCreateProductDTO.name(), requestCreateProductDTO.description(), requestCreateProductDTO.price());
     }
@@ -55,8 +55,10 @@ public class Product {
     }
 
     public void setCategory(Category category) {
-        this.category = category;
-        this.updatedAt = LocalDateTime.now();
+        if (this.category != category) {
+            this.category = category;
+            this.updatedAt = LocalDateTime.now();
+        }
     }
 
     public String getName() {
@@ -64,8 +66,10 @@ public class Product {
     }
 
     public void setName(String name) {
-        this.name = name;
-        this.updatedAt = LocalDateTime.now();
+        if (!this.name.equals(name)) {
+            this.name = name;
+            this.updatedAt = LocalDateTime.now();
+        }
     }
 
     public String getDescription() {
@@ -73,8 +77,10 @@ public class Product {
     }
 
     public void setDescription(String description) {
-        this.description = description;
-        this.updatedAt = LocalDateTime.now();
+        if (!this.description.equals(description)) {
+            this.description = description;
+            this.updatedAt = LocalDateTime.now();
+        }
     }
 
     public long getPrice() {
@@ -82,8 +88,10 @@ public class Product {
     }
 
     public void setPrice(long price) {
-        this.price = price;
-        this.updatedAt = LocalDateTime.now();
+        if (this.price != price) {
+            this.price = price;
+            this.updatedAt = LocalDateTime.now();
+        }
     }
 
     public LocalDateTime getUpdatedAt() {
