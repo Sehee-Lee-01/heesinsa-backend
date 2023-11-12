@@ -14,9 +14,9 @@ import java.util.*;
 
 @Repository
 public class ProductRepository {
-    private static final int EXPECTED_INSERT_COUNT = 1;
+    private static final int EXPECTED_UPDATE_COUNT = 1;
     private final NamedParameterJdbcTemplate jdbcTemplate;
-    private RowMapper<Product> rowMapper = (resultSet, i) -> {
+    private final RowMapper<Product> rowMapper = (resultSet, i) -> {
         UUID id = toUUID(resultSet.getBytes("id"));
         Category category = Category.valueOf(resultSet.getString("category"));
         String name = resultSet.getString("name");
@@ -53,8 +53,8 @@ public class ProductRepository {
                         "VALUES(UUID_TO_BIN(:id), :name, :category, :price,:description,:created_at,:updated_at)",
                 toParamMap(product)
         );
-        if (insertedCount != EXPECTED_INSERT_COUNT) {
-            throw new IncorrectResultSetColumnCountException(EXPECTED_INSERT_COUNT, insertedCount);
+        if (insertedCount != EXPECTED_UPDATE_COUNT) {
+            throw new IncorrectResultSetColumnCountException(EXPECTED_UPDATE_COUNT, insertedCount);
         }
     }
 
@@ -66,5 +66,16 @@ public class ProductRepository {
 
     public List<Product> findAll() {
         return jdbcTemplate.query("SELECT * FROM products", Collections.emptyMap(), rowMapper);
+    }
+
+    public Optional<Product> findById(UUID id) {
+        return Optional.ofNullable(jdbcTemplate.queryForObject("SELECT * FROM products WHERE id = UUID_TO_BIN(:id)", Collections.singletonMap("id", id.toString().getBytes()), rowMapper));
+    }
+
+    public void delete(UUID id) {
+        int deletedCount = jdbcTemplate.update("DELETE FROM products WHERE id = UUID_TO_BIN(:id)", Collections.singletonMap("id", id.toString().getBytes()));
+        if (deletedCount != EXPECTED_UPDATE_COUNT) {
+            throw new IncorrectResultSetColumnCountException(EXPECTED_UPDATE_COUNT, deletedCount);
+        }
     }
 }

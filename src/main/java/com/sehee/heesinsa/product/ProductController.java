@@ -3,9 +3,11 @@ package com.sehee.heesinsa.product;
 import com.sehee.heesinsa.product.dto.RequestCreateProductDTO;
 import com.sehee.heesinsa.product.dto.ResponseProductDTO;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotNull;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.UUID;
 
 //TODO: apply ResponseEntity
 @RequestMapping("/api/products")
@@ -18,12 +20,17 @@ public class ProductController {
     }
 
     @PostMapping
-    public ResponseProductDTO createProduct(@Valid @RequestBody RequestCreateProductDTO requestCreateProductDTO) {
-        return productService.createProduct(requestCreateProductDTO);
+    public ResponseProductDTO create(@Valid @RequestBody RequestCreateProductDTO requestCreateProductDTO) {
+        return productService.create(requestCreateProductDTO);
+    }
+
+    @DeleteMapping
+    public ResponseProductDTO delete(@NotNull @RequestParam UUID id) {
+        return productService.delete(id);
     }
 
     @GetMapping
-    public List<ResponseProductDTO> readAllByProductName(@RequestParam(required = false) String name) {
-        return name == null ? productService.readAll() : productService.readAllByProductName(name);
+    public List<ResponseProductDTO> readAll(@RequestParam(required = false) String name) {
+        return name == null ? productService.readAll() : productService.readAllByName(name);
     }
 }
