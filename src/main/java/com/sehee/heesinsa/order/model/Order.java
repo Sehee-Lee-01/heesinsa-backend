@@ -1,12 +1,16 @@
 package com.sehee.heesinsa.order.model;
 
+import jakarta.validation.constraints.NotEmpty;
+
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Objects;
 import java.util.UUID;
 
 public class Order {
     private final UUID id;
     private final Email email;
+    @NotEmpty
     private final List<OrderItem> orderItems;
     private final LocalDateTime createdAt;
     private String address;
@@ -47,8 +51,10 @@ public class Order {
     }
 
     public void setAddress(String address) {
-        this.address = address;
-        this.updatedAt = LocalDateTime.now();
+        if (!Objects.equals(this.address, address)) {
+            this.address = address;
+            this.updatedAt = LocalDateTime.now();
+        }
     }
 
     public String getPostcode() {
@@ -56,8 +62,10 @@ public class Order {
     }
 
     public void setPostcode(String postcode) {
-        this.postcode = postcode;
-        this.updatedAt = LocalDateTime.now();
+        if (!Objects.equals(this.postcode, postcode)) {
+            this.postcode = postcode;
+            this.updatedAt = LocalDateTime.now();
+        }
     }
 
     public OrderStatus getOrderStatus() {
@@ -65,8 +73,10 @@ public class Order {
     }
 
     public void setOrderStatus(OrderStatus orderStatus) {
-        this.orderStatus = orderStatus;
-        this.updatedAt = LocalDateTime.now();
+        if (!Objects.equals(this.orderStatus, orderStatus)) {
+            this.orderStatus = orderStatus;
+            this.updatedAt = LocalDateTime.now();
+        }
     }
 
     public LocalDateTime getUpdatedAt() {
